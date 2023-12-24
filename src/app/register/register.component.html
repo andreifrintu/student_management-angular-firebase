@@ -1,1 +1,21 @@
-<p>register works!</p>
+<h1 class="header">Create an account with Firebase</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <form [formGroup]="registerForm" (submit)="tryRegister()">
+                <div class="form-group">
+                    <label>Email address</label>
+                    <input type="email" formControlName="email" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" formControlName="password">
+                    <label class="error">{{errorMessage}}</label>
+                    <label class="success">{{successMessage}}</label>
+                </div>
+                <button type="submit" class="btn btn-outline-secondary bg-mint mb-3 w-100">Register</button>
+            </form>
+            <p>Already have an account? <a [routerLink]="['/login']">Login</a></p>
+        </div>
+    </div>
+</div>
