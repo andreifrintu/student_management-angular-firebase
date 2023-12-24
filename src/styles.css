@@ -25,6 +25,14 @@ main {
     height: 75vh;
     text-align: center;
 }
+input {
+    border: none !important;
+    text-align: center;
+}
+input:active, input:focus {
+    outline: 3px solid var(--sea-green) !important;
+    border-radius: 7px;
+}
 .bg-mint:hover {
     border-color: var(--white);
     color: var(--white);
