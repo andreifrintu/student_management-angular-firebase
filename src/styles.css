@@ -25,3 +25,20 @@ main {
     height: 75vh;
     text-align: center;
 }
+.bg-mint:hover {
+    border-color: var(--white);
+    color: var(--white);
+    background-color: var(--mint);
+}
+.btn-secondary {
+    background-color: var(--licorice);
+    border: none;
+}
+.btn-primary {
+    background-color: var(--sea-green);
+    border: none;
+}
+.btn-outline-secondary {
+    color: var(--white);
+    border-color: var(--white);
+}
