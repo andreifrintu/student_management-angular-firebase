@@ -1,27 +1,46 @@
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-3 offset-md-4">
-            <div class="card">
-                <img class="card-img-top image" src="../../assets/profile-picture.png">
-                <div *ngIf='user.provider !== "password"' class="card-body">
-                    <h4 class="card-title">{{user.name}}</h4>
-                    <p class="card-text">This is an example of Social Authentication using Firebase in an Angular 7 web
-                        app. </p>
-                </div>
-                <div *ngIf='user.provider === "password"' class="card-body">
-                    <form [formGroup]="profileForm" (submit)="save()">
-                        <div class="form-group">
-                            <label>Your name</label>
-                            <input type="text" formControlName="name" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary mt-1">
-                            <span *ngIf="!displayNameAlreadySetted">Save</span>
-                            <span *ngIf="displayNameAlreadySetted">Update</span>
-                        </button>
-                    </form>
-                </div>
+<div class="w-100 p-2 d-flex gap-2 h-100">
+    <div class="w-25">
+        <div class="card h-100">
+            <img class="card-img-top w-50 image m-auto mb" src="../../assets/profile-picture.png">
+            <div *ngIf='user.provider !== "password"' class="card-body">
+                <h4 class="card-title">{{user.name}}</h4>
             </div>
-            <button type="button" (click)="logout()" class="btn btn-primary mt-3">Logout</button>
+            <div *ngIf='user.provider === "password"' class="card-body">
+                <form [formGroup]="profileForm" (submit)="save()">
+                    <div class="form-group">
+                        <label>Your name</label>
+                        <input type="text" formControlName="name" class="form-control" required>
+                        <label>Your IP Address</label>
+                        <p type="text" id="ipaddr"></p>
+                    </div>
+                    <button type="submit" class="btn btn-secondary bg-mint mt-3 w-100">
+                        <span>Update</span>
+                    </button>
+                    <button type="button" (click)="logout()" class="btn btn-secondary bg-mint w-100 mt-2 text-center">Logout</button>
+                </form>
+            </div>
         </div>
+    </div>
+    <div class="w-50 card rounded">
+        <table id="table-content">
+            <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>age</th>
+                <th>grade</th>
+                <th>operations</th>
+            </tr>
+        </table>
+    </div>
+    <div class="p-3 w-25 card rounded">
+        <label>Student name:</label>
+        <input type="text" id="addStudentName" class="form-control" required>
+        <label>Student age:</label>
+        <input type="text" id="addStudentAge" class="form-control" required>
+        <label>Student grade:</label>
+        <input type="text" id="addStudentGrade" class="form-control" required>
+        <button type="button" id="addStudentButton" class="btn btn-secondary bg-mint mt-1 w-100">
+            <span>Add student</span>
+        </button>
     </div>
 </div>
