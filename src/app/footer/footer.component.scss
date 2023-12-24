@@ -1,0 +1,16 @@
+$white: #ffffffff;
+$sea-green: #488b49ff;
+$mint: #64b591ff;
+$tiffany-blue: #80ded9ff;
+$orange-wheel: #ff8427ff;
+$licorice: #1f1300ff;
+
+.footer {
+    margin-top: 2rem;
+    width: 100%;
+    background-color: $sea-green;
+    text-align: center;
+    margin-bottom: 0;
+    color: $white;
+    padding: 1rem;
+}
