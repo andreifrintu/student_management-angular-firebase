@@ -2,26 +2,21 @@
     <div class="w-25">
         <div class="card h-100">
             <img class="card-img-top w-50 image m-auto mb" src="../../assets/profile-picture.png">
-            <div *ngIf='user.provider !== "password"' class="card-body">
-                <h4 class="card-title">{{user.name}}</h4>
-            </div>
-            <div *ngIf='user.provider === "password"' class="card-body">
-                <form [formGroup]="profileForm" (submit)="save()">
-                    <div class="form-group">
-                        <label>Your name</label>
-                        <input type="text" formControlName="name" class="form-control" required>
-                        <label>Your IP Address</label>
-                        <p type="text" id="ipaddr">{{this.ipAddress}}</p>
-                    </div>
-                    <button type="submit" class="btn btn-secondary bg-mint mt-3 w-100">
-                        <span>Update</span>
-                    </button>
-                    <button type="button" (click)="logout()" class="btn btn-secondary bg-mint w-100 mt-2 text-center">Logout</button>
-                </form>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Your account</label>
+                    <p class="fw-bold mb-0">{{this.acc}}</p>
+                    <label>Today's date</label>
+                    <p class="fw-bold mb-0">{{this.date}}</p>
+                    <label>Your IP Address</label>
+                    <p class="fw-bold mb-0">{{this.ipAddress}}</p>
+                </div>
+                <button type="button" (click)="logout()" class="btn btn-secondary bg-mint w-100 mt-2 text-center">Logout</button>
             </div>
         </div>
     </div>
-    <div class="w-50 card rounded">
+    <div class="w-50 card rounded p-2">
+        <h1 class="fs-4" style="color: #488b49ff;">Check the attendance of student<input class="fs-5" type="text" value="1" #studentID><a style="color: #488b49ff;" class="fs-4" [href]="'attendance?id=' + studentID.value">></a></h1>
         <table id="table-content">
             <tr>
                 <th>id</th>
@@ -33,14 +28,14 @@
         </table>
     </div>
     <div class="p-3 w-25 card rounded">
-        <label>Student name:</label>
-        <input type="text" id="addStudentName" class="form-control" required>
-        <label>Student age:</label>
-        <input type="text" id="addStudentAge" class="form-control" required>
-        <label>Student grade:</label>
-        <input type="text" id="addStudentGrade" class="form-control" required>
-        <button type="button" id="addStudentButton" class="btn btn-secondary bg-mint mt-1 w-100">
-            <span>Add student</span>
-        </button>
+        <form [formGroup]="studentForm" (submit)="add()">
+            <label>Student name:</label>
+            <input type="text" formControlName="name" class="form-control" required>
+            <label>Student age:</label>
+            <input type="number" formControlName="age" class="form-control" required>
+            <label>Student grade:</label>
+            <input type="text" formControlName="grade" class="form-control" required>
+            <button type="submit" class="btn btn-secondary bg-mint mt-3 w-100"><span>Add student</span></button>
+        </form>
     </div>
 </div>

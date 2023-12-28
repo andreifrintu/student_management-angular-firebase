@@ -9,39 +9,10 @@ export class UserService {
 
   getCurrentUser(): Promise<User> {
     return new Promise<any>((resolve, reject) => {
-      this.afAuth.onAuthStateChanged(function(user) {
-        if (user) {
-          resolve(user);
-        } else {
-          reject('No user logged in');
-        }
+      this.afAuth.onAuthStateChanged(user => {
+        user ? resolve(user) : reject('No user logged in');
       });
     });
-  }
+  }  
 
-  updateCurrentUser(userUpdatedInfos: any): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      const user = this.afAuth.currentUser.then(user => {
-        user?.updateProfile({
-          displayName: userUpdatedInfos.name,
-          photoURL: userUpdatedInfos.photoURL
-        }).then(res => {
-          console.log(res);
-          return resolve(res);
-        }, err => reject(err));
-      });
-      });
-  }
 }
-
-export class FirebaseUserModel {
-    image: string;
-    name: string;
-    provider: string;
-  
-    constructor() {
-      this.image = '';
-      this.name = '';
-      this.provider = '';
-    }
-  }

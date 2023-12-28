@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ReactiveFormsModule, Form } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../firebase/auth';
-import { UserService, FirebaseUserModel } from '../firebase/user';
+import { UserService } from '../firebase/user';
 import { initializeApp } from "firebase/app";
 import { doc, getFirestore } from "firebase/firestore";
 import { collection, getDocs, setDoc, deleteDoc } from "firebase/firestore"; 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { firebaseConfig } from '../firebase-config';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-user',
@@ -20,64 +21,34 @@ import { firebaseConfig } from '../firebase-config';
 })
 export class UserComponent implements OnInit {
 
+  studentsRef = collection(getFirestore(initializeApp(firebaseConfig)), "students");
+  contor = 1;
+
   ipAddress!: string;
-  user: FirebaseUserModel = new FirebaseUserModel();
-  profileForm!: FormGroup;
-  displayNameAlreadySetted: boolean = true;
-  
-  app = initializeApp(firebaseConfig);
-  db = getFirestore(this.app);
-  studentsRef = collection(this.db, "students");
-  contor = 0;
+  date!: string;
+  acc!: string;
+
+  studentForm!: FormGroup;
 
   constructor(
-    public userService: UserService,
+    public afAuth: AngularFireAuth,
     public authService: AuthService,
+    private formBuilder: FormBuilder,
     private router: Router,
-    private fb: FormBuilder,
     private http: HttpClient
   ) {
-    this.profileForm = this.fb.group({
-      name: ['', Validators.required]
-    })
-  }
-
-  ngOnInit(): void {
-
-    this.userService.getCurrentUser().then(user => {
-
-      if (user.providerData[0].providerId == 'password') {
-        if (user.displayName)
-          this.user.name = user.displayName;
-        this.user.provider = user.providerData[0].providerId;
-      }
-      else {
-        if (user.displayName)
-          this.user.name = user.displayName;
-        this.user.provider = user.providerData[0].providerId;
-      }
-      if (!this.user.name) {
-        this.displayNameAlreadySetted = true;
-      }
-      this.createForm(this.user.name);
-
-      })
-
-    this.getIPAddress();
-    this.LoadTable();
-  }
-
-  createForm(name: any) {
-    this.profileForm = this.fb.group({
-      name: [name, Validators.required]
+    this.studentForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      age: [null, [Validators.required, Validators.min(0)]],
+      grade: ['', Validators.required]
     });
   }
 
-  save() {
-    this.userService.updateCurrentUser({ name: this.profileForm.controls['name'].value })
-      .then(res => {
-        console.log(res);
-      }, err => console.log(err))
+  ngOnInit(): void {
+    this.LoadTable();
+    this.LoadAcc();
+    this.LoadDate();
+    this.LoadIP();
   }
 
   logout() {
@@ -88,10 +59,20 @@ export class UserComponent implements OnInit {
     });
   }
 
-  getIPAddress() {
+  LoadAcc() {
+    this.afAuth.onAuthStateChanged(user => {
+      this.acc = (user?.email) ? user?.email : "";
+    });
+  }
+
+  LoadIP() {
     this.http.get('https://api.ipify.org/?format=json').subscribe((data: any) => {
       this.ipAddress = data.ip;
     });
+  }
+
+  LoadDate() {
+    this.date = new Date().toLocaleDateString();
   }
 
   LoadTable() {
@@ -131,13 +112,6 @@ export class UserComponent implements OnInit {
     } else {
       console.error("Table container not found in the HTML.");
     }
-    document.getElementById("addStudentButton")?.addEventListener("click", () => {
-      const studentName = document.getElementById("addStudentName") as HTMLInputElement;
-      const studentAge = document.getElementById("addStudentAge") as HTMLInputElement;
-      const studentGrade = document.getElementById("addStudentGrade") as HTMLInputElement;
-  
-      this.add(this.contor, studentName ?.value, parseInt(studentAge ?.value), parseInt(studentGrade ?.value));
-    });
   }
 
   edit(id: number) {
@@ -152,17 +126,16 @@ export class UserComponent implements OnInit {
     });
   }
 
-  async add(id: number, name: string, age: number, grade: number) {
-    await setDoc(doc(this.studentsRef, id.toString()), {
-      id: id,
-      name: name,
-      age: age,
-      grade: grade
-    }).then(() => {
+  async add() {
+    if (this.studentForm.valid) {
+      const { name, age, grade } = this.studentForm.value;
+      const id = this.contor;
+
+      await setDoc(doc(this.studentsRef, id.toString()), { id, name, age, grade });
       this.contor++;
       this.LoadTable();
-    });
-
+      this.studentForm.reset();
+    }
   }
   
   async del(id: number) {
